@@ -1,0 +1,7 @@
+# .gitignore for Metagen-Py
+
+## python cache
+*.pyc
+
+## .meta files
+*.meta
