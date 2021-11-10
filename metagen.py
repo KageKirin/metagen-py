@@ -9,7 +9,7 @@ colorama.init()
 import xxhash
 from string import Template
 
-def generateMetaFile(filename, guid):
+def generateMetaFile(filename, guid, overwrite):
     tpl = Template(r"""fileFormatVersion: 2
 guid: $guid
 MonoImporter:
@@ -22,9 +22,17 @@ MonoImporter:
   assetBundleName: 
   assetBundleVariant:
 """)
-    p = Path(filename)
-    p = p.with_suffix(p.suffix + ".meta")
-    p.write_text(tpl.substitute(guid=guid.hexdigest()))
+    metaFile = Path(filename)
+    metaFile = metaFile.with_suffix(metaFile.suffix + ".meta")
+
+    if metaFile.exists() and not overwrite:
+        print('skipping', metaFile)
+        return
+
+    txt = tpl.substitute(guid=guid.hexdigest())
+    print('writing', metaFile)
+    print(txt)
+    metaFile.write_text(txt)
 
 
 def main(args):
@@ -36,14 +44,19 @@ def main(args):
     print(seed.hexdigest())
 
     for f in args.files:
-        guid = xxhash.xxh128(f, seed=seed.intdigest())
-        generateMetaFile(f, guid)
+        p = Path(f)
+        if p.suffix == ".meta":
+            continue
 
-    
+        if p.exists():
+            guid = xxhash.xxh128(f, seed=seed.intdigest())
+            generateMetaFile(f, guid, args.overwrite)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Unity .meta file generator')
     parser.add_argument('-s', '--seed', help='seed string, e.g. package name', type=str, default=str(Path.cwd()))
+    parser.add_argument('-o', '--overwrite', help='overwrite existing .meta files', action='store_true')
     parser.add_argument('files', help='files to generate .meta files for', nargs='+')
     args = parser.parse_args()
     args.files = list(set(args.files))
