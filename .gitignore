@@ -5,3 +5,7 @@
 
 ## .meta files
 *.meta
+
+## build
+build
+*.egg-info
