@@ -35,7 +35,7 @@ MonoImporter:
     metaFile.write_text(txt)
 
 
-def main(args):
+def process(args):
     assert(args)
     assert(args.seed)
     assert(args.files)
@@ -53,7 +53,7 @@ def main(args):
             generateMetaFile(f, guid, args.overwrite)
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description='Unity .meta file generator')
     parser.add_argument('-s', '--seed', help='seed string, e.g. package name', type=str, default=str(Path.cwd()))
     parser.add_argument('-o', '--overwrite', help='overwrite existing .meta files', action='store_true')
@@ -61,4 +61,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.files = list(set(args.files))
     print(args)
-    main(args)
+    process(args)
+
+if __name__ == "__main__":
+    main()
