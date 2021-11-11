@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='metagen',
     version='0.0.1',
@@ -7,6 +10,8 @@ setup(
     url='https://github.com/KageKirin/metagen-py',
     author='Chris Helmich',
     author_email='kagekirin@gmail.com',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     license='MIT',
     packages=['metagen'],
     install_requires=[
@@ -32,4 +37,10 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
     ],
+
+    entry_points={
+        'console_scripts': [
+            'metagen=metagen.metagen:main',
+        ],
+    },
 )
